@@ -9,6 +9,7 @@ Features
 ===
 
 Allows user to:
+
 -select an image from the folder "res/drawable/".
 -select a difficulty which translates into a field size.
 -tap on the tile that should move to the empty place.
@@ -18,6 +19,7 @@ Allows user to:
 -receive a conformation when the puzzle is solved.
 
 Allows app to:
+
 -return to a saved state from a previous session.
 -automatically generate tiles from a selected picture.
 -switch between the three different screens when the user desires to.
