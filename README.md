@@ -27,16 +27,23 @@ Allows app to:
 Activities
 ===
 
-select game
+## select game
+
+Shows previous game if available. Allows user to scroll down to select new a new game with a new image.
 
 ![](doc/images/ImageSelect.png)
 
 
-play game
+## play game
+
+Divided and exploded selected image and allow user to tap the movable tiles.
 
 ![](doc/images/playGame.png)
 
 
-finished game
+## finished game
+
+Congratulates the user when finished. A single tap anywhere on the screen will return to the screen
+where a new game can be selected.
 
 ![](doc/images/finishedGame.png)
