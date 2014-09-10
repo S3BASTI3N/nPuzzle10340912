@@ -36,7 +36,8 @@ Shows previous game if available. Allows user to scroll down to select new a new
 
 ## play game
 
-Divided and exploded selected image and allow user to tap the movable tiles.
+Divided and exploded selected image and allow user to tap the movable tiles. (Note that the image
+displayed is not rendered correctly as the bottom row of tiles is not completely filled)
 
 ![](doc/images/playGame.png)
 
