@@ -12,41 +12,59 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 
-public class ImageSelection extends ActionBarActivity {
+public class GamePlay extends ActionBarActivity {
 
-    private int _firstItem = -1;
-    private int _secondItem = -1;
+    private int _imageIndex;
+    private int _gameWidth = 3;
 
-    static final String MESSAGE_IMAGE_INDEX = "MESSAGE_IMAGE_INDEX";
+    private int _firstPosition = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.image_selection);
 
-        GridView gridView = (GridView)findViewById( R.id.image_grid );
-        final BaseAdapter imageAdapter = new ImageAdapter( this );
+        setContentView( R.layout.play_game );
 
-        gridView.setAdapter( imageAdapter );
+        // Parse arguments
+        Intent intent = getIntent();
+        _imageIndex = Integer.parseInt( intent.getStringExtra( ImageSelection.MESSAGE_IMAGE_INDEX ));
+
+
+        GridView gridView = (GridView)findViewById( R.id.play_field );
+        GameTileAdapter gameTileAdapter = new GameTileAdapter( this, _imageIndex );
+
+        gameTileAdapter.createTiles( _gameWidth );
+
+        gridView.setNumColumns(_gameWidth);
+        gridView.setStretchMode( GridView.STRETCH_COLUMN_WIDTH );
+
+        gridView.setAdapter( gameTileAdapter );
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-                switchToGamePlay(position);
+                if (_firstPosition == -1) {
+                    _firstPosition = position;
+
+                    return;
+                }
+
+                GameTileAdapter gameTileAdapter = (GameTileAdapter) parent.getAdapter();
+                if (!gameTileAdapter.switchItems(_firstPosition, position)) {
+                    Toast.makeText(parent.getContext(), "Invalid move", Toast.LENGTH_SHORT).show();
+                }
+
+                _firstPosition = -1;
 
             }
         });
 
-    }
 
-    private void switchToGamePlay( int imageIndex ) {
 
-        Intent newActivity = new Intent( this, GamePlay.class );
-        String selectedImageIndex = imageIndex + "";
 
-        newActivity.putExtra( MESSAGE_IMAGE_INDEX, selectedImageIndex );
 
-        startActivity( newActivity );
+
 
     }
 

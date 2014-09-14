@@ -48,3 +48,4 @@ Congratulates the user when finished. A single tap anywhere on the screen will r
 where a new game can be selected.
 
 ![](doc/images/finishedGame.png)
+
