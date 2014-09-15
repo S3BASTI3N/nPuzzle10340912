@@ -98,7 +98,14 @@ public class GamePlay extends ActionBarActivity {
     }
 
     public void switchToCongratulate() {
-        Toast.makeText( this, "Finished game", Toast.LENGTH_SHORT ).show();
+
+        Intent newActivity = new Intent( this, YouWin.class );
+        String selectedImageResourceId = _imageResourceId + "";
+
+        newActivity.putExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID, selectedImageResourceId );
+
+        startActivity( newActivity );
+
     }
 
     @Override
@@ -112,7 +119,8 @@ public class GamePlay extends ActionBarActivity {
             public void run() {
                 GridView grid = (GridView)findViewById ( R.id.play_field );
                 GameField gameField = (GameField)grid.getAdapter();
-                gameField.scrambleField();
+                // TODO remove commented scramble
+                //gameField.scrambleField();
                 _locked = false;
             }
         }, 3000  );
