@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 
 public class YouWin extends ActionBarActivity {
@@ -19,12 +20,18 @@ public class YouWin extends ActionBarActivity {
 
         // Parse arguments
         Intent intent = getIntent();
-        int imageResourceId = Integer.parseInt( intent.getStringExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID ));
+        int imageResourceId = intent.getIntExtra(ImageSelection.MESSAGE_IMAGE_RESOURCE_ID, -1);
+        int nMoves = intent.getIntExtra( GamePlay.MESSAGE_MOVE_COUNT, 0 );
 
         // Set Image in final screen
-        ImageView imageView = (ImageView)findViewById(R.id.final_image);
+        ImageView imageView = (ImageView)findViewById( R.id.final_image );
         imageView.setImageResource( imageResourceId );
 
+        // Display amount of moves
+        TextView textView = (TextView)findViewById( R.id.final_moves );
+        textView.setText( "You finished in " + nMoves + " moves" );
+
+        // Add click listener to return to main screen
         View finalScreen = (View)findViewById( R.id.you_win_activity );
         finalScreen.setOnClickListener( new View.OnClickListener() {
             @Override

@@ -27,6 +27,7 @@ public class GamePlay extends ActionBarActivity {
     private boolean _locked = true;
 
     private static final int NO_POSITION = -1;
+    public static final String MESSAGE_MOVE_COUNT = "MESSAGE_MOVE_COUNT";
 
 
     @Override
@@ -100,9 +101,9 @@ public class GamePlay extends ActionBarActivity {
     public void switchToCongratulate() {
 
         Intent newActivity = new Intent( this, YouWin.class );
-        String selectedImageResourceId = _imageResourceId + "";
 
-        newActivity.putExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID, selectedImageResourceId );
+        newActivity.putExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID, _imageResourceId );
+        newActivity.putExtra( MESSAGE_MOVE_COUNT, _nMoves );
 
         startActivity( newActivity );
 
@@ -119,8 +120,8 @@ public class GamePlay extends ActionBarActivity {
             public void run() {
                 GridView grid = (GridView)findViewById ( R.id.play_field );
                 GameField gameField = (GameField)grid.getAdapter();
-                // TODO remove commented scramble
-                //gameField.scrambleField();
+
+                gameField.scrambleField();
                 _locked = false;
             }
         }, 3000  );
