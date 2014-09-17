@@ -116,6 +116,28 @@ After three seconds the pieces are shuffled.
 ##### public void updateMovesDisplay()
 - Upates the amount of moves the user has made on the display
 
+***
+
+#### YouWin
+
+##### public class YouWin extends ActionBarActivity
+- Class that holds the third and last acivity of the application. Congratulates the user, displays the 
+image that was used in the puzzle and the amount of moves the user used to complete te puzzle.
+
+---
+
+##### protected void onCreate(Bundle savedInstanceState)
+- Creates the activity and sets the amount of moves and the images as parsed from the previous activity.
+
+---
+
+##### public void switchToImageSelect()
+- Switch back to the first activity (ImageSelection) when the user clicks somewhere on the screen.
+
+***
+
+
+
 
 
 
