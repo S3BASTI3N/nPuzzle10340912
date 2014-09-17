@@ -36,6 +36,7 @@ MenuItem item: the selected item in the menu. A action can follow according to w
 ##### public static int[] IMAGES()
 - Returns all resource ids of images in the drawable folder whose name starts with "npuzzle".
 
+---
 
 #### ImageAdapter
 
