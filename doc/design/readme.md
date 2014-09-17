@@ -261,8 +261,8 @@ boolean selected: the state of the selection of this tile.
 Uses the BitFactory library.
 
 Context context: the activity in which the method is used.   
-int resourceId: the resourceId of the image that is to be loaded and scaled.
-int width: the desired width of the loaded image.
+int resourceId: the resourceId of the image that is to be loaded and scaled.   
+int width: the desired width of the loaded image.   
 
 ***
 
