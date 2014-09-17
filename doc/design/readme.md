@@ -210,3 +210,41 @@ View concertView: if the item exist already it is given in this variable.
 ViewGroup parent: the GridView that is the parent of the item.  
 
 ***
+
+#### GameTile
+
+##### public class GameTile
+- This class contains all information of a single GameTile. It contains the image, coordinates, id,
+whether or not the tile is selected or not and if this tile is the empty tile.
+
+---
+
+##### public GameTile( Bitmap bitmap, int x, int y, int id, boolean empty )
+- The constructor of this class that takes all information needed.
+
+Bitmap bitmap: the image that is to be displayed in this tile.   
+int x: the x coordinate of this tile.   
+int y: the y coordinate of this tile.
+int id: the id of this tile which is the correct order of the tiles (Position 1 is id 1 etc).
+boolean empty: whether or not this tile is the empty tile.
+
+---
+
+##### public boolean equals( GameTile tile )
+- Returns true when the coordinates of this tile and another tile are the same.
+
+GameTile tile: the other tile used to compare the coordinates.   
+
+---
+
+##### public boolean isAdjacent( GameTile tile )
+- Returns true when this tile and another tile are adjacent (four-connected)
+
+GameTile tile: the other tile used to compare.
+
+##### public void setSelected( boolean selected )
+- Set whether or not a tile is selected or not.
+
+boolean selected: the state of the selection of this tile.
+
+***
