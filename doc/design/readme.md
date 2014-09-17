@@ -3,15 +3,56 @@ Design Document
 
 ## Activities
 
+#### ImageSelection Activity
+
 ![](../images/ImageSelectionDetail.png)
 
+##### Red
+The ImageAdapter class with SquareImageView as tiles. All resources in the drawable folder 
+whose name start with "npuzzle" are drawn here. When an image is clicked the GamePlay activity is 
+started and the selected image is parsed as an argument to that new activity.
+
 ***
 
-![](../images/PlayGameDetail.png)
+#### GamePlay Activity
+
+![](../images/GamePlayDetail.png)
+
+##### Red
+The GameField that holds all the GameTiles. When a GameTile is tapped it is first selected. A green outline
+will appear. When a second tile is tapped the GameField will check if the move is valid. If it is the
+two tiles will be switched. If it is not valid a error message will be displayed using the Toast lib.
+
+Three seconds after this activity is loaded the tiles will be shuffled.
+
+When the puzzle is solved (the tiles are restored to the correct order) the final activity YouWin will
+be loaded.
+
+##### Green
+An example of a single GameTile.
+
+##### Cyan
+Here the amount of moves the user has made is displayed. A move is only counted when it is a valid one.
+
+##### Yellow
+The "take a good look" message will disappear after three seconds. At this time the tiles will also be shuffled.
 
 ***
+
+#### YouWin Activity
 
 ![](../images/YouWinDetail.png)
+
+
+When the user taps somewhere on the screen, the first activity (ImageSelection) is loaded again and a
+new game can be loaded.
+
+##### Red
+The image that was used to create the puzzle is parsed by the previous activity (GamePlay) and is displayed
+again here.
+
+##### Green
+The amount of moves the user used is also parsed to this activity and displayed.
 
 ***
 
