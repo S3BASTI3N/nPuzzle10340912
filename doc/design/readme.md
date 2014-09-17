@@ -351,3 +351,15 @@ final int h: the new height of the view.
 final int oldw: the old width of the view.   
 final int oldh: the old height of the view.
 
+
+***
+
+## Libraries
+
+#### Toast
+The toast library is used to display error messages. More specific, when a invalid move is made.
+
+#### BitmapFactory
+This library is used to load bitmaps, to rescale them and to draw small portions of a image to create 
+the individual GameTiles.
+
