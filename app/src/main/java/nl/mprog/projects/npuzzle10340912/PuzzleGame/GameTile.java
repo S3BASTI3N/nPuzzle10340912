@@ -23,6 +23,8 @@ public class GameTile {
     public static final int COLOR_SELECTED = Color.rgb( 164, 198, 57 );
     public static final int COLOR_UNSELECTED = Color.BLACK;
 
+
+
     public GameTile( Bitmap bitmap, int x, int y, int id, boolean empty ) {
         _bitmap = bitmap;
         _coordinate = new Point( x, y );

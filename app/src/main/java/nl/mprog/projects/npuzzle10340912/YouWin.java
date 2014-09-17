@@ -1,14 +1,18 @@
 package nl.mprog.projects.npuzzle10340912;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import nl.mprog.projects.npuzzle10340912.Utils.BitmapLoader;
 
 
 public class YouWin extends ActionBarActivity {
@@ -25,7 +29,13 @@ public class YouWin extends ActionBarActivity {
 
         // Set Image in final screen
         ImageView imageView = (ImageView)findViewById( R.id.final_image );
-        imageView.setImageResource( imageResourceId );
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics( metrics );
+
+        Bitmap finalBitmap = BitmapLoader.loadScaledBitmapFromResource( this, imageResourceId, metrics.widthPixels );
+
+        imageView.setImageBitmap( finalBitmap );
 
         // Display amount of moves
         TextView textView = (TextView)findViewById( R.id.final_moves );

@@ -3,6 +3,7 @@ package nl.mprog.projects.npuzzle10340912;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -17,13 +18,16 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
+import java.util.LinkedList;
+
 import nl.mprog.projects.npuzzle10340912.Utils.BitmapLoader;
 import nl.mprog.projects.npuzzle10340912.Utils.SquareImageView;
 
 
 public class ImageSelection extends ActionBarActivity {
 
-    public static int IMAGES[] = { R.drawable.npuzzle1, R.drawable.npuzzle2 };
+
     static final String MESSAGE_IMAGE_RESOURCE_ID = "MESSAGE_IMAGE_RESOURCE_ID";
 
     @Override
@@ -48,13 +52,12 @@ public class ImageSelection extends ActionBarActivity {
 
             }
         });
-
     }
 
     private void switchToGamePlay( int imageIndex ) {
 
         Intent newActivity = new Intent( this, GamePlay.class );
-        String selectedImageResourceId = IMAGES[imageIndex] + "";
+        String selectedImageResourceId = IMAGES()[imageIndex] + "";
 
         newActivity.putExtra( MESSAGE_IMAGE_RESOURCE_ID, selectedImageResourceId );
 
@@ -65,8 +68,6 @@ public class ImageSelection extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(R.menu.image_selection, menu);
         return true;
     }
 
@@ -97,7 +98,7 @@ public class ImageSelection extends ActionBarActivity {
 
         @Override
         public int getCount() {
-            return ImageSelection.IMAGES.length;
+            return ImageSelection.IMAGES().length;
         }
 
         @Override
@@ -127,12 +128,45 @@ public class ImageSelection extends ActionBarActivity {
 
             }
 
-            squareImageView.setImageBitmap( BitmapLoader.loadScaledBitmapFromResource(_context, ImageSelection.IMAGES[position], _screenWidth / 3));
+            squareImageView.setImageBitmap( BitmapLoader.loadScaledBitmapFromResource(_context, ImageSelection.IMAGES()[position], _screenWidth / 3));
 
             return squareImageView;
         }
     }
 
+    public static int[] IMAGES() {
 
+
+
+        R.drawable drawableResources = new R.drawable();
+        Class<R.drawable> c = R.drawable.class;
+        Field[] fields = c.getDeclaredFields();
+
+        LinkedList<Integer> items = new LinkedList<Integer>();
+
+        for( int i = 0; i < fields.length; i++ ) {
+
+            try {
+                int resourceId = fields[i].getInt( drawableResources );
+                String itemName = fields[i].getName();
+                if( itemName.startsWith( "npuzzle" )) {
+                    items.add( resourceId );
+                    System.out.println( itemName );
+                }
+
+            } catch( Exception e ) {
+                System.out.println( e.getMessage() );
+            }
+        }
+
+        int[] itemArray = new int[items.size()];
+
+        for( int i = 0; i < items.size();i++ ) {
+            itemArray[i] = items.get(i);
+        }
+
+        return itemArray;
+
+    }
 
 }

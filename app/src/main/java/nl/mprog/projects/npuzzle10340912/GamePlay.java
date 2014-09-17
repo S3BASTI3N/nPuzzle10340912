@@ -14,13 +14,15 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import nl.mprog.projects.npuzzle10340912.PuzzleGame.GameField;
 
 
 public class GamePlay extends ActionBarActivity {
 
     private int _imageResourceId;
-    private int _gameWidth = 3;
+    private int _gameWidth = 5;
 
     private int _firstPosition = NO_POSITION;
     private int _nMoves = 0;
@@ -68,6 +70,7 @@ public class GamePlay extends ActionBarActivity {
                     if( _firstPosition == position ) {
                         gameField.setSelected( position, false );
                         _firstPosition = NO_POSITION;
+                        return;
                     }
                     if (_firstPosition == NO_POSITION) {
                         _firstPosition = position;
@@ -76,8 +79,6 @@ public class GamePlay extends ActionBarActivity {
 
                         return;
                     }
-
-
 
                     gameField.setSelected(_firstPosition, false);
                     if (!gameField.switchTiles(_firstPosition, position)) {
@@ -122,6 +123,10 @@ public class GamePlay extends ActionBarActivity {
                 GameField gameField = (GameField)grid.getAdapter();
 
                 gameField.scrambleField();
+
+                TextView textView = (TextView)findViewById( R.id.play_game_preview);
+                textView.setVisibility(View.INVISIBLE);
+
                 _locked = false;
             }
         }, 3000  );

@@ -53,11 +53,10 @@ public class GameField extends BaseAdapter {
 
         _tiles = reverseTiles;
 
-        // If the amount of tiles is even, switch two tiles around
+        // TODO If the amount of tiles is even, switch two tiles around
         if( (_tiles.length/2)*2 == _tiles.length ) {
             GameTile temp = _tiles[0];
-            _tiles[0] = _tiles[1];
-            _tiles[1] = temp;
+
         }
 
         notifyDataSetChanged();
@@ -117,7 +116,8 @@ public class GameField extends BaseAdapter {
         GameTile source = _tiles[ position1];
         GameTile destination = _tiles[ position2];
 
-        System.out.println( source._coordinate.toString() + ",  " + destination._coordinate.toString() );
+        // TODO remove print statement
+        //System.out.println( source._coordinate.toString() + ",  " + destination._coordinate.toString() );
 
         if( !moveIsValid( source, destination) )
             return false;
@@ -163,6 +163,7 @@ public class GameField extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         SquareImageView squareImageView = new SquareImageView( _context );
 
 
@@ -180,7 +181,6 @@ public class GameField extends BaseAdapter {
 
         squareImageView.setBackgroundColor( _tiles[position]._color );
         squareImageView.setImageBitmap( _tiles[position]._bitmap );
-
 
         return squareImageView;
     }
