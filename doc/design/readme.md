@@ -264,4 +264,33 @@ Context context: the activity in which the method is used.
 int resourceId: the resourceId of the image that is to be loaded and scaled.
 int width: the desired width of the loaded image.
 
+***
+
+#### SquareImageView
+
+##### public class SquareImageView extends ImageView
+- Class that holds a square ImageView
+
 ---
+
+##### public SquareImageView(Context context)
+- The default constructor of an ImageView
+
+---
+
+##### protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec)
+- When the ImageView is measured the height is updated to be the same as the width in order to make the image square.
+
+final int widthMeasureSpec: the width of the SquareImageView.   
+final int heightMeasureSpec: the height of the SquareImageView.   
+
+---
+
+##### protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh)
+- When the size is changed the height is changed to be the same as the width;
+
+final int w: the new with of the view.   
+final int h: the new height of the view.   
+final int oldw: the old width of the view.   
+final int oldh: the old height of the view.
+
