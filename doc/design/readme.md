@@ -1,7 +1,23 @@
 Design Document
 ===============
 
+## Activities
+
+![](../images/ImageSelectionDetail.png)
+
+***
+
+![](../images/PlayGameDetail.png)
+
+***
+
+![](../images/YouWinDetail.png)
+
+***
+
 ## JAVA Classes
+
+#### Structure
 
 All JAVA classes are ordered as followed:
 

@@ -22,7 +22,7 @@ import nl.mprog.projects.npuzzle10340912.PuzzleGame.GameField;
 public class GamePlay extends ActionBarActivity {
 
     private int _imageResourceId;
-    private int _gameWidth = 5;
+    private int _gameWidth = 3;
 
     private int _firstPosition = NO_POSITION;
     private int _nMoves = 0;
