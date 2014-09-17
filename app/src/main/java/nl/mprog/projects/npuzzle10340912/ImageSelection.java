@@ -65,12 +65,6 @@ public class ImageSelection extends ActionBarActivity {
 
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -135,8 +129,6 @@ public class ImageSelection extends ActionBarActivity {
     }
 
     public static int[] IMAGES() {
-
-
 
         R.drawable drawableResources = new R.drawable();
         Class<R.drawable> c = R.drawable.class;
