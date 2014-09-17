@@ -248,3 +248,20 @@ GameTile tile: the other tile used to compare.
 boolean selected: the state of the selection of this tile.
 
 ***
+
+#### BitmapLoader
+
+##### public class BitmapLoader
+- Utility class used to load Bitmaps and rescale them.
+
+---
+
+##### public static Bitmap loadScaledBitmapFromResource( Context context, int resourceId, int width )
+- Returns a scaled BitMap from a resourceId. Scaled the image while mainting its original aspect ratio.
+Uses the BitFactory library.
+
+Context context: the activity in which the method is used.   
+int resourceId: the resourceId of the image that is to be loaded and scaled.
+int width: the desired width of the loaded image.
+
+---
