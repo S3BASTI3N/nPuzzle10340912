@@ -129,6 +129,8 @@ image that was used in the puzzle and the amount of moves the user used to compl
 ##### protected void onCreate(Bundle savedInstanceState)
 - Creates the activity and sets the amount of moves and the images as parsed from the previous activity.
 
+Bundle savedInstanceState: the state of the application in a previous execution
+
 ---
 
 ##### public void switchToImageSelect()
@@ -136,9 +138,75 @@ image that was used in the puzzle and the amount of moves the user used to compl
 
 ***
 
+#### GameField
 
+##### public class GameField extends BaseAdapter
+- Class that holds the actual game. Doubles as a GridView for easy integration.
 
+---
 
+##### public void scrambleField()
+- Scrambles the tiles of the puzzle by inverting the order.
 
+---
 
+##### public void createTiles( int gameSize, int desiredWidth )
+- Creates all the tiles based on the selected image.
 
+int gameSize: the size of the rows and columns of the game   
+int desiredWidth: the desired width of the tiles in the puzzle
+
+---
+
+##### public void setSelected( int position, boolean selected )
+- Set a tile of the puzzle selected or not based on the position
+
+int position: the position of the tile whose selected state is to be changed.   
+boolean selected: whether or not the selected state should be turned on or off.
+
+---
+
+##### public boolean switchTiles( int position1, int position2 )
+- Switch two tiles around based on there position, returns true when the movement complies with the rules
+
+int position1: the position of the first tile   
+int position2: the position of the second tile
+
+---
+
+##### public boolean moveIsValid( GameTile source, GameTile destination )
+- Checks whether a move of two tiles is valid based on their location in the game field.
+
+GameTile source: the first tile that is to be moved.   
+GameTile destination: the second tile that is to be moved.
+
+---
+
+##### public int getCount()
+- Returns the amount of items in the game field.
+
+---
+
+##### public Object getItem(int position)
+- Returns the GameTile based on its position in the game field.
+
+int position: the position of the GameTile in the game field that is to be returned.
+
+---
+
+##### public long getItemId(int position)
+- Return the item id of the GameTile at the position specified.
+
+int position: the position of the GameTile whose id is to be returned.
+
+---
+
+##### public View getView(int position, View convertView, ViewGroup parent)
+- Return the view of the item according to its position. Uses the GameTiles according to their set
+position on the field.
+
+int position: the position of the item in the grid.   
+View concertView: if the item exist already it is given in this variable.   
+ViewGroup parent: the GridView that is the parent of the item.  
+
+***
