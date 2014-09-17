@@ -89,12 +89,32 @@ ViewGroup parent: the GridView that is the parent of the item.
 #### GamePlay
 
 ##### public class GamePlay extends ActionBarActivity
+- Class that is the second activity of this application. Contains the actual puzzle. Also adds an click
+listener to the game which handles the moves of the tiles in the puzzle.
 
-- Class that contains all the 
+---
 
- 
-        
+##### protected void onCreate(Bundle savedInstanceState)
+- Function that is called when the activity is started. Will create the puzzle and display it.
 
+Bundle savedInstanceState: the state of the application in a previous execution
+
+---
+
+##### public void switchToCongratulate()
+- Switch to the next activity to congratulate the user. Called when the tiles of the puzzle are in
+the correct order
+
+---
+
+##### protected void onResume()
+- Called after the activity is fully loaded. Used to first display the puzzle in its correct state. 
+After three seconds the pieces are shuffled.
+
+---
+
+##### public void updateMovesDisplay()
+- Upates the amount of moves the user has made on the display
 
 
 
