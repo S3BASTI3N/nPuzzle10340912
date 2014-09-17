@@ -15,33 +15,40 @@ All JAVA classes are ordered as followed:
 │   └── SquareImageView.java   
 └── YouWin.java   
 
+***
 
 #### ImageSelection
 
 ##### public class ImageSelection extends ActionBarActivity
 - The main activity of this application. It will start when the app is loaded. Of type ActionBarActivity.
 
+---
+
 ##### private void switchToGamePlay( int imageIndex )
 - Changes to the next activity GamePlay and passes the resource id of the selected image.   
 
 int imageIndex: the position of the selected image in the GridView of this activity.
 
+---
 
 ##### public boolean onOptionsItemSelected(MenuItem item)
 - Action handler for the menu in this activity.   
 
 MenuItem item: the selected item in the menu. A action can follow according to which item was selected.
 
+---
 
 ##### public static int[] IMAGES()
 - Returns all resource ids of images in the drawable folder whose name starts with "npuzzle".
 
----
+***
 
 #### ImageAdapter
 
 ##### public class ImageAdapter extends BaseAdapter
 - A basic adapter that can hold images. Used to display square preview images in the selection activity.
+
+---
 
 ##### public ImageAdapter( Context context, int screenWidth )
 - Constructor in of the image adapter.   
@@ -49,19 +56,26 @@ MenuItem item: the selected item in the menu. A action can follow according to w
 Context context: the context in which the adapter is going to be used.   
 int screenWidth: the screen width of the application, later used to scale the preview images in the grid.
 
+---
         
 ##### public int getCount()
-- Get the amount of items in the grid.   
+- Get the amount of items in the grid.  
+ 
+---
         
 ##### public Object getItem(int position)
 - Get an Object based on the position in the grid
 
 int position: the position of the item in the grid.
+
+---
         
 ##### public long getItemId(int position)
 - Get the id of an item based on the position of the item in the grid.
 
 int position: the position of the item in the grid.
+
+---
         
 ##### public View getView(int position, View convertView, ViewGroup parent)
 - return how the View of the items in this adapter should be based on the position, View and Viewgroup
@@ -70,6 +84,13 @@ int position: the position of the item in the grid.
 View concertView: if the item exist already it is given in this variable.   
 ViewGroup parent: the GridView that is the parent of the item.   
 
+***
+
+#### GamePlay
+
+##### public class GamePlay extends ActionBarActivity
+
+- Class that contains all the 
 
  
         
