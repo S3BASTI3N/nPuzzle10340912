@@ -51,6 +51,8 @@ public class YouWin extends ActionBarActivity {
 
             }
         });
+
+        deleteDatabase( "nPuzzle10340912" );
     }
 
     public void switchToImageSelect() {

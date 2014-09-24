@@ -363,3 +363,5 @@ The toast library is used to display error messages. More specific, when a inval
 This library is used to load bitmaps, to rescale them and to draw small portions of a image to create 
 the individual GameTiles.
 
+
+## comment: difficulties.restore states

@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,12 +17,14 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
 
 import nl.mprog.projects.npuzzle10340912.Utils.BitmapLoader;
+import nl.mprog.projects.npuzzle10340912.Utils.GameState;
 import nl.mprog.projects.npuzzle10340912.Utils.SquareImageView;
 
 
@@ -29,6 +32,8 @@ public class ImageSelection extends ActionBarActivity {
 
 
     static final String MESSAGE_IMAGE_RESOURCE_ID = "MESSAGE_IMAGE_RESOURCE_ID";
+
+    private GameState _gameState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,9 @@ public class ImageSelection extends ActionBarActivity {
         DisplayMetrics screenMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics( screenMetrics );
 
+        _gameState = new GameState( this );
+        if( _gameState.isRestored() ) restoreState( screenMetrics.widthPixels );
+
         BaseAdapter imageAdapter = new ImageAdapter( this, screenMetrics.widthPixels );
 
         gridView.setAdapter( imageAdapter );
@@ -52,12 +60,40 @@ public class ImageSelection extends ActionBarActivity {
 
             }
         });
+
+        ImageView previousGame = (ImageView)findViewById( R.id.restore_game_image);
+        previousGame.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switchToGamePlay(-1);
+            }
+        });
+    }
+
+    private void restoreState( int width ) {
+
+        if( width == 0 ) width = 800;
+
+        // Set text
+        TextView restoreGameText = (TextView)findViewById( R.id.restore_game_text );
+        restoreGameText.setText( "Continue previous game");
+
+        // Set scaled image
+        ImageView restoreGameImage = (ImageView)findViewById( R.id.restore_game_image );
+        restoreGameImage.setImageBitmap(
+                BitmapLoader.loadScaledBitmapFromResource( this, _gameState.getResourceId(), width ));
+
+
+
     }
 
     private void switchToGamePlay( int imageIndex ) {
 
         Intent newActivity = new Intent( this, GamePlay.class );
-        String selectedImageResourceId = IMAGES()[imageIndex] + "";
+
+        // TODO: convert to int
+        String selectedImageResourceId = "-1";
+        if( imageIndex != -1 ) selectedImageResourceId = IMAGES()[imageIndex] + "";
 
         newActivity.putExtra( MESSAGE_IMAGE_RESOURCE_ID, selectedImageResourceId );
 
@@ -143,11 +179,10 @@ public class ImageSelection extends ActionBarActivity {
                 String itemName = fields[i].getName();
                 if( itemName.startsWith( "npuzzle" )) {
                     items.add( resourceId );
-                    System.out.println( itemName );
                 }
 
             } catch( Exception e ) {
-                System.out.println( e.getMessage() );
+
             }
         }
 
@@ -158,6 +193,22 @@ public class ImageSelection extends ActionBarActivity {
         }
 
         return itemArray;
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Try to restore previous state of game
+        try {
+            _gameState = savedInstanceState.getParcelable( "GameState" );
+
+            Log.d("msg", "Restored game state");
+
+        } catch( Exception e ) {
+            Log.d( "msg", "No saved game state" );
+        }
 
     }
 

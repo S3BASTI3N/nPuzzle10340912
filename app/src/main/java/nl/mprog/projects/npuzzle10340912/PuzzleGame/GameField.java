@@ -11,6 +11,7 @@ package nl.mprog.projects.npuzzle10340912.PuzzleGame;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -133,6 +134,33 @@ public class GameField extends BaseAdapter {
         notifyDataSetChanged();
 
         return true;
+    }
+
+    public int[] getTileOrder() {
+        int order[] = new int[_tiles.length];
+
+        int length = _tiles.length;
+        for( int i = 0; i< length; i++ ) {
+            order[i] = _tiles[i]._id;
+        }
+
+        return order;
+    }
+
+    public void setTileOrder( int tileOrder[] ) {
+
+        Log.d("msg", "new tile order: " + tileOrder.length );
+        Log.d("msg", "old tile order: " + _tiles.length );
+
+        GameTile newOrder[] = new GameTile[_tiles.length];
+
+        for( int i = 0; i < newOrder.length; i++ ) {
+            newOrder[i] = _tiles[tileOrder[i]];
+        }
+
+        // TODO: set new coordinates
+        _tiles = newOrder;
+
     }
 
     public boolean moveIsValid( GameTile source, GameTile destination ) {
