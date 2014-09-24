@@ -235,6 +235,9 @@ public class GameState implements Parcelable {
             for (int i = 0; i < tileOrder.length; i++) {
                 _writableDatabase.execSQL("UPDATE game_state SET position = " + tileOrder[i] +
                         " where id = " + i);
+
+                Log.d( "msg", "UPDATE game_state SET position = " + tileOrder[i] +
+                        " where id = " + i);
             }
 
             _writableDatabase.execSQL("UPDATE game_settings SET difficulty = " + state.getGameDifficulty());
@@ -260,11 +263,17 @@ public class GameState implements Parcelable {
             Cursor cursor = _readableDatabase.rawQuery("SELECT position FROM game_state ORDER BY id ASC", null);
             cursor.moveToFirst();
 
+            // TODO Returns 0 rows.
+
             int result[] = new int[cursor.getCount()];
+
+            Log.d( "msg", "Getting order: " + cursor.toString() );
 
             for( int i = 0; i < result.length; i++ ) {
                 result[i] = cursor.getInt( i );
                 cursor.moveToNext();
+
+                Log.d( "msg", "got: " + result[i]);
             }
 
             return result;
