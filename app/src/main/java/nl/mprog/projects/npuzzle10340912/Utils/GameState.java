@@ -137,36 +137,39 @@ public class GameState implements Parcelable {
                 + "id           INT     PRIMARY     KEY     NOT NULL, "
                 + "position     INT );";
 
-        private final String DATABASE_INIT = "insert into "
+        private final String DATABASE_INIT_POP_SETTING = "insert into "
                 + "game_settings ( id ) "
                 + "values "
-                + "( 0 ); "
+                + "( 0 ); ";
 
-                + "insert into game_state ( id ) values (  0 ); "
-                + "insert into game_state ( id ) values (  1 ); "
-                + "insert into game_state ( id ) values (  2 ); "
-                + "insert into game_state ( id ) values (  3 ); "
-                + "insert into game_state ( id ) values (  4 ); "
-                + "insert into game_state ( id ) values (  5 ); "
-                + "insert into game_state ( id ) values (  6 ); "
-                + "insert into game_state ( id ) values (  7 ); "
-                + "insert into game_state ( id ) values (  8 ); "
-                + "insert into game_state ( id ) values (  9 ); "
-                + "insert into game_state ( id ) values ( 10 ); "
-                + "insert into game_state ( id ) values ( 11 ); "
-                + "insert into game_state ( id ) values ( 12 ); "
-                + "insert into game_state ( id ) values ( 13 ); "
-                + "insert into game_state ( id ) values ( 14 ); "
-                + "insert into game_state ( id ) values ( 15 ); "
-                + "insert into game_state ( id ) values ( 16 ); "
-                + "insert into game_state ( id ) values ( 17 ); "
-                + "insert into game_state ( id ) values ( 18 ); "
-                + "insert into game_state ( id ) values ( 19 ); "
-                + "insert into game_state ( id ) values ( 20 ); "
-                + "insert into game_state ( id ) values ( 21 ); "
-                + "insert into game_state ( id ) values ( 22 ); "
-                + "insert into game_state ( id ) values ( 23 ); "
-                + "insert into game_state ( id ) values ( 24 ); ";
+        private final String DATABASE_INIT_POP_STATE =
+
+                "insert into game_state ( id ) values "
+                + "(  0 ),"
+                + "(  1 ),"
+                + "(  2 ),"
+                + "(  3 ),"
+                + "(  4 ),"
+                + "(  5 ),"
+                + "(  6 ),"
+                + "(  7 ),"
+                + "(  8 ),"
+                + "(  9 ),"
+                + "( 10 ),"
+                + "( 11 ),"
+                + "( 12 ),"
+                + "( 13 ),"
+                + "( 14 ),"
+                + "( 15 ),"
+                + "( 16 ),"
+                + "( 17 ),"
+                + "( 18 ),"
+                + "( 19 ),"
+                + "( 20 ),"
+                + "( 21 ),"
+                + "( 22 ),"
+                + "( 23 ),"
+                + "( 24 )";
 
 
         public DBConnect( Context context ) {
@@ -206,7 +209,9 @@ public class GameState implements Parcelable {
             db.execSQL( DATABASE_CREATE_SETTINGS );
             db.execSQL(DATABASE_CREATE_STATE);
 
-            db.execSQL(DATABASE_INIT);
+            db.execSQL(DATABASE_INIT_POP_SETTING);
+            db.execSQL(DATABASE_INIT_POP_STATE);
+
 
             _restored = false;
 
@@ -228,9 +233,10 @@ public class GameState implements Parcelable {
             _writableDatabase.execSQL("UPDATE game_settings SET difficulty = " + state.getGameDifficulty());
             _writableDatabase.execSQL("UPDATE game_settings SET resource_id = " + state.getResourceId());
             _writableDatabase.execSQL("UPDATE game_settings SET moves = " + state.getMoves());
+            _writableDatabase.execSQL("UPDATE game_settings SET difficulty = " + state.getGameDifficulty());
 
             int tileOrder[] = state.getTileOrder();
-
+            Log.d( "msg", "Storing " + tileOrder.length + " tiles" );
 
             for (int i = 0; i < tileOrder.length; i++) {
                 _writableDatabase.execSQL("UPDATE game_state SET position = " + tileOrder[i] +
@@ -239,9 +245,6 @@ public class GameState implements Parcelable {
                 Log.d( "msg", "UPDATE game_state SET position = " + tileOrder[i] +
                         " where id = " + i);
             }
-
-            _writableDatabase.execSQL("UPDATE game_settings SET difficulty = " + state.getGameDifficulty());
-
 
             Log.d("msg", "updated db");
         }
@@ -263,17 +266,16 @@ public class GameState implements Parcelable {
             Cursor cursor = _readableDatabase.rawQuery("SELECT position FROM game_state ORDER BY id ASC", null);
             cursor.moveToFirst();
 
-            // TODO Returns 0 rows.
-
             int result[] = new int[cursor.getCount()];
 
             Log.d( "msg", "Getting order: " + cursor.toString() );
 
+
             for( int i = 0; i < result.length; i++ ) {
-                result[i] = cursor.getInt( i );
+                result[i] = cursor.getInt( 0 );
                 cursor.moveToNext();
 
-                Log.d( "msg", "got: " + result[i]);
+
             }
 
             return result;

@@ -50,12 +50,14 @@ public class GamePlay extends ActionBarActivity {
         _imageResourceId = Integer.parseInt( intent.getStringExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID ));
 
         _state = new GameState( this );
-        if( _state.isRestored() )
-            _imageResourceId = _state.getResourceId();
-
-
-
         _gameWidth = intent.getIntExtra( "gameWidth", 4 );
+
+        if( _imageResourceId == -1 ) {
+            _imageResourceId = _state.getResourceId();
+            _gameWidth = _state.getGameDifficulty();
+
+
+        }
 
         // Initialise image grid
         final GridView gridView = (GridView)findViewById( R.id.play_field );
@@ -166,7 +168,7 @@ public class GamePlay extends ActionBarActivity {
 
             Intent intent = getIntent();
             intent.putExtra( "gameWidth", 3 );
-
+            deleteDatabase( "nPuzzle10340912");
             startActivity(intent);
             return true;
         }
@@ -177,6 +179,7 @@ public class GamePlay extends ActionBarActivity {
 
             Intent intent = getIntent();
             intent.putExtra( "gameWidth", 4 );
+            deleteDatabase( "nPuzzle10340912");
 
             startActivity(intent);
             return true;
@@ -188,6 +191,7 @@ public class GamePlay extends ActionBarActivity {
 
             Intent intent = getIntent();
             intent.putExtra( "gameWidth", 5 );
+            deleteDatabase( "nPuzzle10340912");
 
             startActivity(intent);
             return true;
@@ -234,7 +238,7 @@ public class GamePlay extends ActionBarActivity {
         super.onSaveInstanceState(savedInstanceState);
 
         // TODO: replace 0 with game difficulty
-        GameState gameState = new GameState( this,  _imageResourceId, _nMoves, _gameField.getTileOrder(), 0 );
+        GameState gameState = new GameState( this,  _imageResourceId, _nMoves, _gameField.getTileOrder(), _gameWidth );
 
         savedInstanceState.putParcelable( "GameState", gameState );
 

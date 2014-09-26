@@ -39,6 +39,9 @@ public class ImageSelection extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // TODO: remove comment
+        // deleteDatabase( "nPuzzle10340912" );
+
         setContentView(R.layout.image_selection);
 
         GridView gridView = (GridView)findViewById( R.id.image_grid );

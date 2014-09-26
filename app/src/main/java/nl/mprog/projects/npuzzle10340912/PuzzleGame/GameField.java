@@ -158,8 +158,23 @@ public class GameField extends BaseAdapter {
             newOrder[i] = _tiles[tileOrder[i]];
         }
 
-        // TODO: set new coordinates
+
         _tiles = newOrder;
+
+        int gameWidth = (int)Math.sqrt( (double)_tiles.length );
+        int x = 0, y = 0;
+
+        for( int i = 0; i < _tiles.length; i++ ) {
+            if( x == gameWidth ) y++;
+            if( x == gameWidth ) x = 0;
+
+            _tiles[i]._coordinate = new Point( x, y );
+
+            x++;
+
+        }
+
+        notifyDataSetChanged();
 
     }
 
