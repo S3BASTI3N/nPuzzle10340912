@@ -1,3 +1,11 @@
+/****************************************************
+ *
+ * Author: Sébastien Negrijn
+ * uvaID:  10340912
+ * email:  sebastiennegrijn@hotmail.com
+ *
+ ****************************************************/
+
 package nl.mprog.projects.npuzzle10340912;
 
 import android.content.Intent;
@@ -16,13 +24,11 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import nl.mprog.projects.npuzzle10340912.PuzzleGame.GameField;
+import nl.mprog.projects.npuzzle10340912.PuzzleGame.GameFieldAdapter;
 import nl.mprog.projects.npuzzle10340912.Utils.GameState;
 
 
-public class GamePlay extends ActionBarActivity {
+public class GamePlayActivity extends ActionBarActivity {
 
     private int _imageResourceId;
     private int _gameWidth = 4;
@@ -30,9 +36,12 @@ public class GamePlay extends ActionBarActivity {
     private int _firstPosition = NO_POSITION;
     private int _nMoves = 0;
     private boolean _locked = true;
-    GameField _gameField;
+    private GameFieldAdapter _gameFieldAdapter;
+    private boolean _restart = false;
 
-    GameState _state;
+    private GameState _state;
+    private Handler _startGame;
+    private Runnable _startGameRunnable;
 
     private static final int NO_POSITION = -1;
     public static final String MESSAGE_MOVE_COUNT = "MESSAGE_MOVE_COUNT";
@@ -43,61 +52,65 @@ public class GamePlay extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        setContentView(R.layout.play_game);
+        setContentView(R.layout.play_game_layout);
 
         // Parse arguments
         Intent intent = getIntent();
-        _imageResourceId = Integer.parseInt( intent.getStringExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID ));
+        _imageResourceId = intent.getIntExtra( ImageSelectionActivity.MESSAGE_IMAGE_RESOURCE_ID, -1 );
 
-        _state = new GameState( this );
+
         _gameWidth = intent.getIntExtra( "gameWidth", 4 );
 
+        _state = new GameState( this );
+
         if( _imageResourceId == -1 ) {
+            Log.d( "GamePlay", "Setting imageResource and gamewith from db" );
             _imageResourceId = _state.getResourceId();
             _gameWidth = _state.getGameDifficulty();
 
 
         }
 
+        Log.d( "GamePlay", "Game width is set to: " + _gameWidth );
+        Log.d( "GamePlay", "Game width in db is: " + _state.getGameDifficulty());
+
         // Initialise image grid
         final GridView gridView = (GridView)findViewById( R.id.play_field );
-        _gameField = new GameField( this, _imageResourceId );
+        _gameFieldAdapter = new GameFieldAdapter( this, _imageResourceId );
 
         // Get screen width
         DisplayMetrics screenMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics( screenMetrics );
-        _gameField.createTiles( _gameWidth, screenMetrics.widthPixels );
+        _gameFieldAdapter.createTiles( _gameWidth, screenMetrics.widthPixels );
 
         gridView.setNumColumns(_gameWidth);
         gridView.setStretchMode( GridView.STRETCH_COLUMN_WIDTH );
 
-        gridView.setAdapter(_gameField);
+        gridView.setAdapter(_gameFieldAdapter);
 
         updateMovesDisplay();
-
-
 
 
         // Add click listener for actions;
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 if( !_locked ) {
-                    GameField gameField = (GameField) parent.getAdapter();
+                    GameFieldAdapter gameFieldAdapter = (GameFieldAdapter) parent.getAdapter();
                     if( _firstPosition == position ) {
-                        gameField.setSelected( position, false );
+                        gameFieldAdapter.setSelected( position, false );
                         _firstPosition = NO_POSITION;
                         return;
                     }
                     if (_firstPosition == NO_POSITION) {
                         _firstPosition = position;
 
-                        gameField.setSelected(position, true);
+                        gameFieldAdapter.setSelected(position, true);
 
                         return;
                     }
 
-                    gameField.setSelected(_firstPosition, false);
-                    if (!gameField.switchTiles(_firstPosition, position)) {
+                    gameFieldAdapter.setSelected(_firstPosition, false);
+                    if (!gameFieldAdapter.switchTiles(_firstPosition, position)) {
                         Toast.makeText(parent.getContext(), "Invalid move", Toast.LENGTH_SHORT).show();
                     } else {
                         _nMoves++;
@@ -106,7 +119,7 @@ public class GamePlay extends ActionBarActivity {
 
                     _firstPosition = -1;
 
-                    if( gameField.isGameFinished() ) {
+                    if( gameFieldAdapter.isGameFinished() ) {
                         switchToCongratulate();
                     }
                 }
@@ -114,44 +127,68 @@ public class GamePlay extends ActionBarActivity {
             }
         });
 
-        Handler startGame = new Handler();
-
-        startGame.postDelayed(new Runnable() {
+        _startGame = new Handler();
+        _startGameRunnable = new Runnable() {
             @Override
             public void run() {
-                GridView grid = (GridView) findViewById(R.id.play_field);
-                GameField gameField = (GameField) grid.getAdapter();
-
-                if( _state.isRestored() ) {
-                    _gameField.setTileOrder( _state.getTileOrder() );
-                } else {
-                    gameField.scrambleField();
-                }
-
-                TextView textView = (TextView) findViewById(R.id.play_game_preview);
-                textView.setVisibility(View.INVISIBLE);
-
-                _locked = false;
+                initialiseField();
             }
-        }, 3000);
+        };
 
+        _startGame.postDelayed( _startGameRunnable, 3000);
+
+    }
+
+    public void initialiseField() {
+        GridView grid = (GridView) findViewById(R.id.play_field);
+        GameFieldAdapter gameFieldAdapter = (GameFieldAdapter) grid.getAdapter();
+
+        if( _state.isValid() ) {
+            Log.d( "GamePlay", "Restoring tile order" );
+            _gameFieldAdapter.setTileOrder( _state.getTileOrder() );
+        } else {
+            Log.d( "GamePlay", "Scrambling the field" );
+            gameFieldAdapter.scrambleField();
+        }
+
+        TextView textView = (TextView) findViewById(R.id.play_game_preview);
+        textView.setVisibility(View.INVISIBLE);
+
+        _locked = false;
     }
 
     public void switchToCongratulate() {
 
-        Intent newActivity = new Intent( this, YouWin.class );
+        finish();
 
-        newActivity.putExtra( ImageSelection.MESSAGE_IMAGE_RESOURCE_ID, _imageResourceId );
+        Intent newActivity = new Intent( this, YouWinActivity.class );
+
+        newActivity.putExtra( ImageSelectionActivity.MESSAGE_IMAGE_RESOURCE_ID, _imageResourceId );
         newActivity.putExtra( MESSAGE_MOVE_COUNT, _nMoves );
 
         startActivity( newActivity );
+
+
 
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.play_game, menu);
+        inflater.inflate(R.menu.play_game_menu, menu);
+
+        int menuItemId = 0;
+        if( _gameWidth == 3 ) menuItemId = R.id.easy;
+        if( _gameWidth == 4 ) menuItemId = R.id.normal;
+        if( _gameWidth == 5 ) menuItemId = R.id.hard;
+
+        if( menuItemId != 0 ) {
+            MenuItem menuItem = menu.findItem( menuItemId );
+
+            menuItem.setChecked( true );
+
+        }
+
         return true;
     }
 
@@ -164,44 +201,37 @@ public class GamePlay extends ActionBarActivity {
 
         // Switch gamemode to easy
         if( id == R.id.easy && _gameWidth != 3 ) {
-            finish();
 
-            Intent intent = getIntent();
-            intent.putExtra( "gameWidth", 3 );
-            deleteDatabase( "nPuzzle10340912");
-            startActivity(intent);
+            changeDifficulty( 3 );
+
             return true;
         }
 
         // Switch gamemode to normal
         if( id == R.id.normal && _gameWidth != 4 ) {
-            finish();
 
-            Intent intent = getIntent();
-            intent.putExtra( "gameWidth", 4 );
-            deleteDatabase( "nPuzzle10340912");
+            changeDifficulty( 4 );
 
-            startActivity(intent);
             return true;
         }
 
         // Switch gamemode to hard
         if( id == R.id.hard && _gameWidth != 5 ) {
-            finish();
 
-            Intent intent = getIntent();
-            intent.putExtra( "gameWidth", 5 );
-            deleteDatabase( "nPuzzle10340912");
+            changeDifficulty( 5 );
 
-            startActivity(intent);
             return true;
         }
 
         // Restart game
         if( id == R.id.restart ) {
+            _restart = true;
             finish();
 
+            _state.invalidate();
+
             Intent intent = getIntent();
+            intent.putExtra( ImageSelectionActivity.MESSAGE_IMAGE_RESOURCE_ID, _imageResourceId );
             intent.putExtra( "gameWidth", _gameWidth );
 
             startActivity(intent);
@@ -210,19 +240,30 @@ public class GamePlay extends ActionBarActivity {
 
         // Quit game
         if( id == R.id.quit ) {
-            Intent intent = new Intent( this, ImageSelection.class );
-            deleteDatabase( "nPuzzle10340912" );
+
+            _state.invalidate();
+            _imageResourceId = 0;
+            _nMoves = 0;
 
             finish();
 
-            startActivity( intent );
-
         }
 
-        if (id == R.id.action_settings) {
-            return true;
-        }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void changeDifficulty( int difficulty ) {
+
+        _restart = true;
+        finish();
+
+        Intent intent = getIntent();
+        intent.putExtra( ImageSelectionActivity.MESSAGE_IMAGE_RESOURCE_ID, _imageResourceId );
+        intent.putExtra( "gameWidth", difficulty );
+        _state.invalidate();
+
+        startActivity(intent);
+
     }
 
     public void updateMovesDisplay() {
@@ -234,15 +275,43 @@ public class GamePlay extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if( _locked ) {
+            _startGame.removeCallbacks(_startGameRunnable);
+            initialiseField();
+        }
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        finish();
+
+        if( ! _restart ) {
+            _state = new GameState(this, _imageResourceId, _nMoves, _gameFieldAdapter.getTileOrder(), _gameWidth);
+        }
+
+        Log.d( "GamePlay", "Pausing this activity" );
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
-        // TODO: replace 0 with game difficulty
-        GameState gameState = new GameState( this,  _imageResourceId, _nMoves, _gameField.getTileOrder(), _gameWidth );
+        GameState gameState = new GameState( this,  _imageResourceId, _nMoves, _gameFieldAdapter.getTileOrder(), _gameWidth );
 
         savedInstanceState.putParcelable( "GameState", gameState );
 
-        Log.d( "msg", "Saved instance" );
+        Log.d( "GamePlay", "Saved instance" );
     }
 
     @Override
@@ -257,11 +326,11 @@ public class GamePlay extends ActionBarActivity {
             this._nMoves = gameState.getMoves();
             this._imageResourceId = gameState.getResourceId();
 
-            Log.d( "msg", "Restored game state" );
+            Log.d( "GamePlay", "Restored game state" );
 
 
         } catch( Exception e ) {
-            Log.d( "msg", "No saved game state" );
+            Log.d( "GamePlay", "No saved game state" );
         }
 
     }

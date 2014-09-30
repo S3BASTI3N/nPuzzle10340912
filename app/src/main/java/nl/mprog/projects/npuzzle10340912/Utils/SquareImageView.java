@@ -9,12 +9,8 @@
 package nl.mprog.projects.npuzzle10340912.Utils;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.widget.ImageView;
 
-/**
- * Created by youbot on 9/15/14.
- */
 public class SquareImageView extends ImageView {
 
     public SquareImageView(Context context) {

@@ -13,16 +13,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-/*
- *
- *  Implemented according to:
+/*  Implemented according to:
  *  http://developer.android.com/training/displaying-bitmaps/load-bitmap.html
- *
  */
 
 public class BitmapLoader {
 
-    public static Bitmap loadScaledBitmapFromResource( Context context, int resourceId, int width ) {
+    public static Bitmap loadScaledBitmapFromResource( Context context, int resourceId, int outWidth ) {
+
+        Log.d( "BitmapLoader", "Load resource with id: "+resourceId+" and width: " + outWidth );
 
         // Get dimensions of original image
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -32,8 +31,7 @@ public class BitmapLoader {
         int imageWidth = options.outWidth;
 
         // calculate the desired dimensions
-        int outWidth = width;
-        int outHeight =  (int)(imageHeight / ((double)(imageWidth) / (double)(width)));
+        int outHeight =  (int)(imageHeight / ((double)(imageWidth) / (double)(outWidth)));
 
         // calculate the sample size;
         options.inSampleSize = 1;

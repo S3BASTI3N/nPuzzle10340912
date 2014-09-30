@@ -19,41 +19,40 @@ import android.util.Log;
 
 public class GameState implements Parcelable {
 
-    private boolean _restored = false;
+    public static final String DB_NAME = "nPuzzle10340912.db";
 
     private int _resourceId;
     private int _moves;
     private int _tileOrder[];
     private int _gameDifficulty;
-    private Context _context;
+    private boolean _valid;
 
     DBConnect _dbConnect;
 
     public GameState( Context context ) {
         _dbConnect = new DBConnect( context );
 
-        //context.deleteDatabase( "nPuzzle10340912" );
+        _valid = _dbConnect.isValid();
 
-        if( _dbConnect.isRestored() ) {
+        if( _valid ) {
 
-            Log.d( "msg", "restored game state");
-
-            _restored = true;
+            Log.d( "GameState", "Found previous gamestate");
 
             _resourceId = _dbConnect.getResourceId();
             _tileOrder  = _dbConnect.getTileOrder();
             _moves = _dbConnect.getMoves();
             _gameDifficulty = _dbConnect.getGameDifficulty();
 
-            Log.d( "msg", "stored image resource: " + _resourceId );
-
+        } else {
+            Log.d( "GameState", "No previous gamestate found" );
         }
+
+        _dbConnect.closeAll();
 
     }
 
     public GameState( Context context, int resourceId, int moves, int tileOrder[], int gameDifficulty ) {
 
-        _context = context;
         _resourceId = resourceId;
         _moves = moves;
         _tileOrder = tileOrder;
@@ -61,6 +60,8 @@ public class GameState implements Parcelable {
 
         _dbConnect = new DBConnect( context );
         _dbConnect.updateState( this );
+
+        _dbConnect.closeAll();
 
     }
 
@@ -72,8 +73,10 @@ public class GameState implements Parcelable {
 
     public int getGameDifficulty() { return _gameDifficulty; }
 
-    public boolean isRestored() {
-        return _restored;
+    public boolean isValid() { return _valid; }
+
+    public void invalidate() {
+        _dbConnect.invalidate();
     }
 
     private GameState( Parcel in ) {
@@ -114,12 +117,8 @@ public class GameState implements Parcelable {
 
     private class DBConnect extends SQLiteOpenHelper {
 
-        private static final String DB_NAME = "nPuzzle10340912";
-
         private SQLiteDatabase _readableDatabase;
         private SQLiteDatabase _writableDatabase;
-
-        private boolean _restored = true;
 
         // Game settings
         private final String DATABASE_CREATE_SETTINGS = "create table "
@@ -142,64 +141,12 @@ public class GameState implements Parcelable {
                 + "values "
                 + "( 0 ); ";
 
-        private final String DATABASE_INIT_POP_STATE =
-
-                "insert into game_state ( id ) values "
-                + "(  0 ),"
-                + "(  1 ),"
-                + "(  2 ),"
-                + "(  3 ),"
-                + "(  4 ),"
-                + "(  5 ),"
-                + "(  6 ),"
-                + "(  7 ),"
-                + "(  8 ),"
-                + "(  9 ),"
-                + "( 10 ),"
-                + "( 11 ),"
-                + "( 12 ),"
-                + "( 13 ),"
-                + "( 14 ),"
-                + "( 15 ),"
-                + "( 16 ),"
-                + "( 17 ),"
-                + "( 18 ),"
-                + "( 19 ),"
-                + "( 20 ),"
-                + "( 21 ),"
-                + "( 22 ),"
-                + "( 23 ),"
-                + "( 24 )";
-
 
         public DBConnect( Context context ) {
-            super( context, DB_NAME, null, 1 );
+            super(context, DB_NAME, null, 1);
 
             _readableDatabase = getReadableDatabase();
             _writableDatabase = getWritableDatabase();
-
-            //context.deleteDatabase( "nPuzzle10340912" );
-
-
-
-            Cursor c = getReadableDatabase().rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
-
-            if (c.moveToFirst()) {
-                while ( !c.isAfterLast() ) {
-                    Log.d( "msg", "Table name: " + c.getString(0));
-                    c.moveToNext();
-                }
-            }
-
-            checkForRestore();
-
-        }
-
-        public void checkForRestore() {
-            Cursor cursor = _writableDatabase.rawQuery( "SELECT resource_id FROM game_settings", null );
-            cursor.moveToFirst();
-
-            if( cursor.getInt(0) == 0 ) _restored = false;
 
         }
 
@@ -210,22 +157,30 @@ public class GameState implements Parcelable {
             db.execSQL(DATABASE_CREATE_STATE);
 
             db.execSQL(DATABASE_INIT_POP_SETTING);
-            db.execSQL(DATABASE_INIT_POP_STATE);
 
+            for( int i = 0; i < 25; i++ ) {
+                db.execSQL( "INSERT INTO game_state ( id ) VALUES( " + i + ")" );
+            }
 
-            _restored = false;
-
-            Log.d( "msg", "Created database" );
+            Log.d( "GameState", "Created database" );
 
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
+            onCreate( db );
+
         }
 
-        public boolean isRestored() {
-            return _restored;
+        public boolean isValid() {
+
+            Cursor cursor = getReadableDatabase().rawQuery( "SELECT resource_id FROM game_settings", null );
+
+            cursor.moveToFirst();
+
+            return cursor.getInt(0) != 0;
+
         }
 
         public void updateState( GameState state ) {
@@ -236,17 +191,14 @@ public class GameState implements Parcelable {
             _writableDatabase.execSQL("UPDATE game_settings SET difficulty = " + state.getGameDifficulty());
 
             int tileOrder[] = state.getTileOrder();
-            Log.d( "msg", "Storing " + tileOrder.length + " tiles" );
+            Log.d( "GameState", "Storing " + tileOrder.length + " tiles" );
 
             for (int i = 0; i < tileOrder.length; i++) {
                 _writableDatabase.execSQL("UPDATE game_state SET position = " + tileOrder[i] +
                         " where id = " + i);
-
-                Log.d( "msg", "UPDATE game_state SET position = " + tileOrder[i] +
-                        " where id = " + i);
             }
 
-            Log.d("msg", "updated db");
+            Log.d("GameState", "updated db");
         }
 
 
@@ -268,14 +220,9 @@ public class GameState implements Parcelable {
 
             int result[] = new int[cursor.getCount()];
 
-            Log.d( "msg", "Getting order: " + cursor.toString() );
-
-
             for( int i = 0; i < result.length; i++ ) {
                 result[i] = cursor.getInt( 0 );
                 cursor.moveToNext();
-
-
             }
 
             return result;
@@ -287,6 +234,17 @@ public class GameState implements Parcelable {
             cursor.moveToFirst();
 
             return cursor.getInt( 0 );
+        }
+
+        public void invalidate() {
+            getWritableDatabase().execSQL( "UPDATE game_settings SET resource_id = 0");
+            closeAll();
+        }
+
+        public void closeAll() {
+            this.close();
+            _readableDatabase.close();
+            _writableDatabase.close();
         }
     }
 }

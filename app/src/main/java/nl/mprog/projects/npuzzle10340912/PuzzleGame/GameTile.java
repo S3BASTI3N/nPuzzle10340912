@@ -24,7 +24,6 @@ public class GameTile {
     public static final int COLOR_UNSELECTED = Color.BLACK;
 
 
-
     public GameTile( Bitmap bitmap, int x, int y, int id, boolean empty ) {
         _bitmap = bitmap;
         _coordinate = new Point( x, y );
@@ -43,12 +42,13 @@ public class GameTile {
     public boolean isAdjacent( GameTile tile ) {
 
         if((_coordinate.x == tile._coordinate.x &&
-                Math.abs( _coordinate.y - tile._coordinate.y ) <= 1)) return true;
+                Math.abs( _coordinate.y - tile._coordinate.y ) <= 1 )) return true;
 
         if((_coordinate.y == tile._coordinate.y &&
-                Math.abs( _coordinate.x - tile._coordinate.x ) <= 1)) return true;
+                Math.abs( _coordinate.x - tile._coordinate.x ) <= 1 )) return true;
 
         return false;
+
     }
 
     public void setSelected( boolean selected ) {
