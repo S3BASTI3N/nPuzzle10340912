@@ -351,6 +351,109 @@ final int h: the new height of the view.
 final int oldw: the old width of the view.   
 final int oldh: the old height of the view.
 
+#### GameState
+
+##### public class GameState implements Parcelable
+- Class that stores and retrieves all information regarding the gamestate from the database and relays
+it to the activities.   
+
+##### public GameState( Context context )
+
+- Constructor called when a activity is started that requires the game state.   
+
+Context context: the context in which the GameState class is initiated. Will retrieve all information 
+from the database to be accessible to the class.   
+
+##### public GameState( Context context, int resourceId, int moves, int tileOrder[], int gameDifficulty )
+
+- Constructor that saves all game related information to the database while constructed.   
+
+Context context: the Context in which the GameState is initiated.   
+int resourceId: the image id of the resource that is used in this game.   
+int moves: the amount of moves the user has used already.   
+int tileOrder[]: the order of the tiles. The ids are kept in a single array.   
+int gameDifficulty: the game difficulty where 3 is easy, 4 is normal and 5 is hard.   
+
+##### private GameState( Parcel in )   
+
+- Constructor called when an activity is restored and requires the game data to be retrieved again.   
+
+Parcel in: the saved data   
+
+##### public int getResourceId()
+- Simple public accessor for the resource id.
+
+##### public int getMoves()
+- Simple public accessor for the amount of moves.   
+
+##### public int[] getTileOrder()
+- Simple public accessor for the tile order array.   
+
+##### public int getGameDifficulty() 
+- Simple public accessor for the game difficulty.   
+
+##### public boolean isValid() 
+- Checks whether the data in the database is still valid by checking of a resource id is set in the database.   
+
+##### public void invalidate()
+- Sets the resource id in the database to 0.    
+        
+##### public int describeContents()
+- Required function for the Parcel functionality. Simply returns 1 for lack of use.   
+    
+##### public void writeToParcel(Parcel destination, int flags)
+- Create the game data fields in the parcel when stored.
+
+Parcel destination: the destination where the fields are to be stored.   
+int flags: options which can be set for the parcel.   
+
+##### public static final Creator<GameState> CREATOR = new Creator<GameState>()
+- Required function for the Parcel functionality. Creates a parcel and forwards the custom implementation.
+
+#### DBConnect
+
+##### public DBConnect( Context context )
+- Connects to the database and creates readable and writable database objects.   
+
+Context context: the context in which the database connection is initiated.   
+ 
+##### public void onCreate(SQLiteDatabase db)
+- When no previous database can be found a new one should be created. Here the tables for the gamesettings
+and game state are created. They are also filled with dummy data.   
+
+SQLiteDatabase db: the database that as been created.
+        
+##### public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+- When the version number of the database in incremented an upgrade should be executed. This method is
+not implemented in this application as this will not happen. Now it simply creates the database as described
+in the previous method onCreate.   
+
+##### public boolean isValid()
+- Checks if the stored game is still valid by checking the resource id in the database. If it is equal
+to 0 it is passed as invalid (false).
+        
+##### public void updateState( GameState state )
+- Updates the field in the database by looking at the values in the passed state.   
+
+GameState state: the state that holds the values that should be stored.
+        
+##### public int getResourceId()
+- A simple accessor function that returns the resource id from the database.
+        
+##### public int getMoves()
+- A simple accessor function that returns the amount of moves stored in the database.
+        
+##### public int[] getTileOrder()
+- A simple accessor function that returns the tile order stored in the database.
+        
+##### public int getGameDifficulty()
+- A simple accessor function that returns the difficulty stored in the database.
+       
+##### public void invalidate()
+- Sets the resource id in the database to 0 which deems all stored data invalid.
+        
+##### public void closeAll()
+- Close all the opened database connections.
 
 ***
 
