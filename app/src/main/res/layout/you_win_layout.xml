@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Congratulations!"
-        android:id="@+id/textView"
+        android:id="@+id/congratulation_text"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:textSize="20dp"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/final_image"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/congratulation_text"
         android:layout_above="@+id/final_moves"
         android:layout_centerHorizontal="true"
         android:src="@drawable/npuzzle0" />
